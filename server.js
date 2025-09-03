@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -9,9 +10,13 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const SECRET_KEY = "your_jwt_secret"; // 🔒 Change in production
+const SECRET_KEY = process.env.SECRET_KEY;
+const PORT = process.env.PORT || 4000;
 
-// ===================== AUTH =====================
+app.listen(PORT, () =>
+  console.log(`Server running on http://localhost:${PORT}`)
+);
+
 app.post("/admin/register", async (req, res) => {
   const { username, password } = req.body;
   const hashed = await bcrypt.hash(password, 10);
@@ -48,7 +53,13 @@ app.post("/admin/login", (req, res) => {
   );
 });
 
-// Middleware for JWT
+app.get("/admins", (req, res) => {
+  db.all("SELECT * FROM admins", [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
 function authenticate(req, res, next) {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
@@ -62,8 +73,6 @@ function authenticate(req, res, next) {
   });
 }
 
-// ===================== INQUIRIES =====================
-// Post new inquiry (public API for Next.js form)
 app.post("/inquiries", (req, res) => {
   const { name, email, message } = req.body;
   db.run(
@@ -76,7 +85,6 @@ app.post("/inquiries", (req, res) => {
   );
 });
 
-// Get all inquiries (protected, admin panel)
 app.get("/inquiries", authenticate, (req, res) => {
   db.all(
     "SELECT * FROM inquiries ORDER BY created_at DESC",
@@ -88,6 +96,6 @@ app.get("/inquiries", authenticate, (req, res) => {
   );
 });
 
-app.listen(4000, () =>
-  console.log("🚀 Server running on http://localhost:4000")
+app.listen(PORT, () =>
+  console.log(`Server running on http://localhost:${PORT}`)
 );

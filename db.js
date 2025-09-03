@@ -1,15 +1,14 @@
 const sqlite3 = require("sqlite3").verbose();
-const db = new sqlite3.Database("./database.db");
+const db = new sqlite3.Database(process.env.DB_FILE || "database.db");
+module.exports = db;
 
 db.serialize(() => {
-  // Admins table
   db.run(`CREATE TABLE IF NOT EXISTS admins (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE,
     password TEXT
   )`);
 
-  // Inquiries table
   db.run(`CREATE TABLE IF NOT EXISTS inquiries (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT,
