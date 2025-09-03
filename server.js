@@ -9,13 +9,8 @@ const db = require("./db");
 const app = express();
 const corsOptions = {
   origin: [
-    "http://localhost:3001",
-    "http://localhost:3002",
-    "http://localhost:3003",
-    "http://localhost:3004",
-    "http://localhost:3005",
-    "http://localhost:3006",
-    "https://your-nextjs-deployment-domain.vercel.app",
+    "https://next-gen-website-ten.vercel.app/",
+    "https://next-gen-admin-penal.vercel.app/",
   ],
   credentials: true,
 };
