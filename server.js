@@ -7,7 +7,20 @@ const cors = require("cors");
 const db = require("./db");
 
 const app = express();
-app.use(cors());
+const corsOptions = {
+  origin: [
+    "http://localhost:3001",
+    "http://localhost:3002",
+    "http://localhost:3003",
+    "http://localhost:3004",
+    "http://localhost:3005",
+    "http://localhost:3006",
+    "https://your-nextjs-deployment-domain.vercel.app",
+  ],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 const SECRET_KEY = process.env.SECRET_KEY;
